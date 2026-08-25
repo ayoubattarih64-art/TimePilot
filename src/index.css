@@ -1,0 +1,362 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   TimePilot design system
+   Tokens are declared once as raw values on :root / .dark, then exposed to
+   Tailwind through @theme. Components only ever reference the semantic
+   Tailwind classes (bg-surface, text-secondary, …), never the raw values,
+   so light/dark stays a single swap in one place.
+
+   The four scales the UI is built from — keep them small on purpose:
+
+   Radius    sm 6px (badges, chips) · md 8px (controls, nav) · lg 12px
+             (cards, dialogs, sheets). Nothing else; `full` is for dots
+             and pills only.
+   Spacing   4px base. Page padding 16 (p-4), section rhythm 20 (gap-5),
+             card padding 16 (p-4), row padding 12 (px-4 py-3), list gaps
+             8 (gap-2). If a value outside this set appears, it is a smell.
+   Motion    one easing curve, three durations. Colour/hover changes are
+             fast (120–150ms); movement is normal (200ms); entrances are
+             slow (220–320ms). All entrances collapse under
+             prefers-reduced-motion.
+   Icons     14 (dense rows) · 16 (controls) · 18 (nav) · 22 (empty
+             states). Stroke 2 everywhere, 1.75 only for the 22px tier.
+   ========================================================================== */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* --- Light (default) ---------------------------------------------------- */
+:root {
+  --tp-surface: #f7f7f8;
+  --tp-surface-raised: #ffffff;
+  --tp-surface-sunken: #eef0f1;
+  --tp-surface-hover: #f1f2f3;
+  --tp-surface-active: #e7e9ea;
+
+  --tp-border-subtle: #edeef0;
+  --tp-border: #dcdfe2;
+  --tp-border-strong: #bdc1c6;
+
+  --tp-text-primary: #1d1f20;
+  --tp-text-secondary: #565a5e;
+  /* Every foreground below clears 4.5:1 against *all* five light surfaces and
+     against its own -subtle tint, not only against white. The tinted pairings
+     are the binding ones: `text-accent` on `bg-accent-subtle` (Badge, Button
+     subtle, the theme picker) and `text-good` on `bg-good-subtle` (Badge,
+     Toast) are the tightest, and the previous values missed AA there — 4.04:1
+     and 3.70:1 for small text. Worst case now: accent 4.72, good 4.89,
+     muted 4.97, critical 4.76, secondary 6.08. */
+  --tp-text-muted: #5f6368;
+  --tp-text-on-accent: #ffffff;
+
+  --tp-accent: #1565c0;
+  --tp-accent-hover: #125aad;
+  --tp-accent-active: #0f4f99;
+  --tp-accent-subtle: #edf3fc;
+  --tp-accent-border: #aecbfa;
+
+  --tp-good: #137333;
+  --tp-good-subtle: #e6f4ea;
+  --tp-warning: #a35c00;
+  --tp-warning-subtle: #fef7e0;
+  --tp-critical: #c5221f;
+  --tp-critical-subtle: #fce8e6;
+  --tp-info: #1565c0;
+  --tp-info-subtle: #edf3fc;
+
+  --tp-shadow-umbra: 60 64 67;
+  --tp-shadow-a1: 0.09;
+  --tp-shadow-a2: 0.06;
+
+  /* Categorical series for activity breakdowns. Fixed order, never cycled;
+     a 7th category folds into "Other". Validated against #ffffff:
+     CVD ΔE 16.4 worst adjacent, normal-vision 27.0, all >= 3:1 contrast.
+     "Other" is a neutral grey outside that hue set, so darkening it to reach
+     3:1 cannot narrow the separation between the chromatic steps. */
+  --tp-cat-1: #1565c0;
+  --tp-cat-2: #e8710a;
+  --tp-cat-3: #12a4a4;
+  --tp-cat-4: #a142f4;
+  --tp-cat-5: #8a7500;
+  --tp-cat-6: #b3268f;
+  --tp-cat-other: #80868b;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --tp-ease: cubic-bezier(0.2, 0, 0, 1);
+  --tp-dur-fast: 120ms;
+  --tp-dur-normal: 200ms;
+  --tp-dur-slow: 320ms;
+}
+
+/* --- Dark: selected steps, not an inverted light ------------------------ */
+.dark {
+  --tp-surface: #131314;
+  --tp-surface-raised: #1e1f20;
+  --tp-surface-sunken: #0e0e0f;
+  --tp-surface-hover: #28292a;
+  --tp-surface-active: #303132;
+
+  --tp-border-subtle: #2a2b2d;
+  --tp-border: #3c4043;
+  --tp-border-strong: #5f6368;
+
+  --tp-text-primary: #e3e3e3;
+  --tp-text-secondary: #c4c7c5;
+  --tp-text-muted: #9aa0a6;
+  --tp-text-on-accent: #062e6f;
+
+  --tp-accent: #8ab4f8;
+  --tp-accent-hover: #a8c7fa;
+  --tp-accent-active: #c2dbfc;
+  --tp-accent-subtle: #1c2f4a;
+  --tp-accent-border: #3f5c8a;
+
+  --tp-good: #81c995;
+  --tp-good-subtle: #17301f;
+  --tp-warning: #fdd663;
+  --tp-warning-subtle: #322710;
+  --tp-critical: #f28b82;
+  --tp-critical-subtle: #3b1a17;
+  --tp-info: #8ab4f8;
+  --tp-info-subtle: #1c2f4a;
+
+  --tp-shadow-umbra: 0 0 0;
+  --tp-shadow-a1: 0.5;
+  --tp-shadow-a2: 0.35;
+
+  /* Dark categorical steps are selected against the dark surface, not an
+     inverted light palette. Validated against #1e1f20: CVD ΔE 14.2 worst
+     adjacent, normal-vision 16.9, all >= 3:1 contrast. */
+  --tp-cat-1: #247ed8;
+  --tp-cat-2: #cf7800;
+  --tp-cat-3: #0ca59c;
+  --tp-cat-4: #8469d5;
+  --tp-cat-5: #ba457b;
+  --tp-cat-6: #729c0f;
+  --tp-cat-other: #80868b;
+}
+
+/* --- Token → Tailwind bridge -------------------------------------------- */
+@theme inline {
+  /* Typography. One family; scale is tight and productivity-oriented.
+     System stack only — MV3's default CSP blocks remote font loading, so a
+     webfont would have to be bundled (@fontsource) rather than linked. */
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI Variable Text', 'Segoe UI', Roboto,
+    sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-2xs--letter-spacing: 0.01em;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.375rem;
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.5rem;
+  --text-lg--letter-spacing: -0.006em;
+  --text-xl: 1.125rem;
+  --text-xl--line-height: 1.625rem;
+  --text-xl--letter-spacing: -0.012em;
+  --text-2xl: 1.375rem;
+  --text-2xl--line-height: 1.75rem;
+  --text-2xl--letter-spacing: -0.016em;
+  --text-3xl: 1.75rem;
+  --text-3xl--line-height: 2.125rem;
+  --text-3xl--letter-spacing: -0.02em;
+  /* Hero/metric display — tabular numerals belong on these. */
+  --text-metric: 2.25rem;
+  --text-metric--line-height: 2.5rem;
+  --text-metric--letter-spacing: -0.025em;
+
+  /* Spacing: 4px base. Generous rhythm comes from using 4/6/8, not 2/3. */
+  --spacing: 0.25rem;
+
+  /* Radius: three steps is the whole scale. */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Restrained, near-neutral shadows. No colored glows. */
+  --shadow-xs: 0 1px 2px rgb(var(--tp-shadow-umbra) / var(--tp-shadow-a1));
+  --shadow-sm:
+    0 1px 2px rgb(var(--tp-shadow-umbra) / var(--tp-shadow-a1)),
+    0 1px 3px 1px rgb(var(--tp-shadow-umbra) / var(--tp-shadow-a2));
+  --shadow-md:
+    0 1px 3px rgb(var(--tp-shadow-umbra) / var(--tp-shadow-a1)),
+    0 4px 8px 3px rgb(var(--tp-shadow-umbra) / var(--tp-shadow-a2));
+  --shadow-lg:
+    0 2px 3px rgb(var(--tp-shadow-umbra) / var(--tp-shadow-a1)),
+    0 6px 10px 4px rgb(var(--tp-shadow-umbra) / var(--tp-shadow-a2));
+
+  /* Semantic colors */
+  --color-surface: var(--tp-surface);
+  --color-surface-raised: var(--tp-surface-raised);
+  --color-surface-sunken: var(--tp-surface-sunken);
+  --color-surface-hover: var(--tp-surface-hover);
+  --color-surface-active: var(--tp-surface-active);
+
+  --color-border-subtle: var(--tp-border-subtle);
+  --color-border: var(--tp-border);
+  --color-border-strong: var(--tp-border-strong);
+
+  --color-primary: var(--tp-text-primary);
+  --color-secondary: var(--tp-text-secondary);
+  --color-muted: var(--tp-text-muted);
+  --color-on-accent: var(--tp-text-on-accent);
+
+  --color-accent: var(--tp-accent);
+  --color-accent-hover: var(--tp-accent-hover);
+  --color-accent-active: var(--tp-accent-active);
+  --color-accent-subtle: var(--tp-accent-subtle);
+  --color-accent-border: var(--tp-accent-border);
+
+  --color-good: var(--tp-good);
+  --color-good-subtle: var(--tp-good-subtle);
+  --color-warning: var(--tp-warning);
+  --color-warning-subtle: var(--tp-warning-subtle);
+  --color-critical: var(--tp-critical);
+  --color-critical-subtle: var(--tp-critical-subtle);
+  --color-info: var(--tp-info);
+  --color-info-subtle: var(--tp-info-subtle);
+
+  --color-cat-1: var(--tp-cat-1);
+  --color-cat-2: var(--tp-cat-2);
+  --color-cat-3: var(--tp-cat-3);
+  --color-cat-4: var(--tp-cat-4);
+  --color-cat-5: var(--tp-cat-5);
+  --color-cat-6: var(--tp-cat-6);
+  --color-cat-other: var(--tp-cat-other);
+
+  /* --- Motion: one curve, three durations, named entrances -------------- */
+  --ease-tp: cubic-bezier(0.2, 0, 0, 1);
+  --animate-rise-in: tp-rise-in 220ms cubic-bezier(0.2, 0, 0, 1);
+  --animate-sheet-in: tp-sheet-in 220ms cubic-bezier(0.2, 0, 0, 1);
+  --animate-dialog-in: tp-dialog-in 160ms cubic-bezier(0.2, 0, 0, 1);
+  --animate-toast-in: tp-toast-in 160ms cubic-bezier(0.2, 0, 0, 1);
+  --animate-check-in: tp-check-in 260ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* --- Base --------------------------------------------------------------- */
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Numerals in metrics/durations must not jitter as values tick. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* The panel's one scroll region: a quiet overlay scrollbar rather than
+     the platform's default gutter. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-clip: content-box;
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-color: var(--tp-border);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--tp-border-strong);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* --- Motion -------------------------------------------------------------- */
+/* Named entrances, applied through Tailwind's `motion-safe:animate-*`. The
+   reduced-motion rule above collapses them anyway, so a user who asks for
+   less motion gets none. Hover/colour feedback stays a plain fast colour
+   transition — only entrances and reveal transforms are keyframed. */
+
+@keyframes tp-rise-in {
+  from {
+    transform: translateY(4px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes tp-sheet-in {
+  from {
+    transform: translateY(6%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes tp-dialog-in {
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes tp-toast-in {
+  from {
+    transform: translateY(0.375rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes tp-check-in {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
