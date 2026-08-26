@@ -8,6 +8,25 @@ Built with React 19, TypeScript 6, Tailwind CSS 4, and Vite 8 on the Chrome Exte
 
 ---
 
+## Product Showcase
+
+![TimePilot side panel overview](public/screenshots/overview.png)
+
+*Side panel overview — the primary surface, with Home and the nine-page navigation.*
+
+| | |
+|---|---|
+| ![Schedule and activity planning](public/screenshots/planning.jpg) | ![Focus session with website blocking](public/screenshots/focus.jpg) |
+| *Planning — scheduled activities across day and week views.* | *Focus — a countdown session with its optional website blocklist.* |
+| ![Standalone countdown timer](public/screenshots/timer.jpg) | ![Reusable day-plan routines](public/screenshots/routines.jpg) |
+| *Timer — the standalone countdown, sharing the same countdown infrastructure.* | *Routines — reusable multi-step day plans that generate scheduled activities.* |
+
+![Focus insights and per-day breakdowns](public/screenshots/insights.jpg)
+
+*Insights — focus totals, session counts, and per-day breakdowns, computed locally.*
+
+---
+
 ## Key Features
 
 | Feature | Description |
